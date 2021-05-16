@@ -16,7 +16,7 @@ namespace Retrodactyl.Chess.Core
             this.type = PieceType.King;
             this.fen = color == Player.Black ? 'k' : 'K';
             this.unicode = color == Player.Black ? '\u265A' : '\u2654';
-            inv = player * -1;
+            inv = player == Player.White ? -1 : 1;
         }
         private int inv;
 
@@ -142,13 +142,13 @@ namespace Retrodactyl.Chess.Core
                 if (left_x > -1)
                 {
                     var p = board[forward_y, left_x];
-                    if (p != null && p.type == PieceType.Pawn) return true;
+                    if (p != null && p.player != player && p.type == PieceType.Pawn) return true;
                 }
                 int right_x = origin_x + 1;
                 if (right_x < 8)
                 {
                     var p = board[forward_y, right_x];
-                    if (p != null && p.type == PieceType.Pawn) return true;
+                    if (p != null && p.player != player && p.type == PieceType.Pawn) return true;
                 }
             }
 
@@ -201,6 +201,50 @@ namespace Retrodactyl.Chess.Core
                 var p = board[pos];
                 if (p != null && p.player != player && p.type == PieceType.Knight) return true;
             }
+
+            // check kings
+            if (origin_x > 0)
+            {
+                var p = board[origin_y, origin_x - 1];
+                if (p != null && p.type == PieceType.King) return true;
+                if (origin_y > 0)
+                {
+                    p = board[origin_y - 1, origin_x - 1];
+                    if (p != null && p.type == PieceType.King) return true;
+                }
+                if (origin_y < 7)
+                {
+                    p = board[origin_y + 1, origin_x - 1];
+                    if (p != null && p.type == PieceType.King) return true;
+                }
+            }
+            if (origin_x < 7)
+            {
+                var p = board[origin_y, origin_x + 1];
+                if (p != null && p.type == PieceType.King) return true;
+                if (origin_y > 0)
+                {
+                    p = board[origin_y - 1, origin_x + 1];
+                    if (p != null && p.type == PieceType.King) return true;
+                }
+                if (origin_y < 7)
+                {
+                    p = board[origin_y + 1, origin_x + 1];
+                    if (p != null && p.type == PieceType.King) return true;
+                }
+            }
+            if (origin_y > 0)
+            {
+                var p = board[origin_y - 1, origin_x];
+                if (p != null && p.type == PieceType.King) return true;
+            }
+            if (origin_y < 7)
+            {
+                var p = board[origin_y + 1, origin_x];
+                if (p != null && p.type == PieceType.King) return true;
+
+            }
+
             return false;
         }
 

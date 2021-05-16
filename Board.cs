@@ -131,11 +131,23 @@ namespace Retrodactyl.Chess.Core
                         {
                             black.Add(p);
                             if (p.type == PieceType.King) blackKing = (King)p;
+
+                            // hack movecount for pawns
+                            if (p.type == PieceType.Pawn && p.location.y > 1)
+                            {
+                                p.moveCount = p.location.y -1;
+                            }
                         }
                         else
                         {
                             white.Add(p);
                             if (p.type == PieceType.King) whiteKing = (King)p;
+
+                            // hack movecount for pawns
+                            if (p.type == PieceType.Pawn && p.location.y < 6)
+                            {
+                                p.moveCount = 6-p.location.y;
+                            }
                         }
                         x++;
                     }
@@ -262,16 +274,30 @@ namespace Retrodactyl.Chess.Core
                         foreach (var p in black)
                             p.GetMoves(state.CurrentMoves);
                     }
-                    /*
-#if DEBUG
+                    
+#if DEBUG           // for each possible move, assert that the pieces and locations are valid
                     foreach (var move in state.CurrentMoves.GetEnumerable())
                     {
                         var p = this[move.from];
                         Debug.Assert(p == move.piece);
                         Debug.Assert(p.location == move.from);
                     }
+
+                    // for each piece on the board, assert the the locations match
+                    for (int y=0; y<8; y++)
+                    {
+                        for (int x=0; x<8; x++)
+                        {
+                            var p = this[y, x];
+                            if (p != default)
+                            {
+                                Debug.Assert(p.location.x == x);
+                                Debug.Assert(p.location.y == y);
+                            }
+                        }
+                    }
 #endif
-                    */
+                    
                 });
                 
                 /*
@@ -296,41 +322,10 @@ namespace Retrodactyl.Chess.Core
         public bool CurrentPlayerInCheck => state.PlayerInCheck;
 
         public bool IsMate => state.PlayerInCheck && !GetMoves().Any();
-        //private bool getIsBlackInCheck() => GetMovesKingCaptures(Player.White).Any();
-        //private bool getIsWhiteInCheck() => GetMovesKingCaptures(Player.Black).Any();
-        //public bool isMate => currentPlayer == Player.White
-        //    ? !whiteKing.GetMoves().Any() && getIsWhiteInCheck()
-        //    : !blackKing.GetMoves().Any() && getIsBlackInCheck();
-        //=> ply % 2 == 0 ? PieceColor.Black : PieceColor.White;
+
         public int ply { get; private set; }
         private HistoryStack<State> history;
         private State state;
-
-        /*
-        public IEnumerable<Move> GetAllMovesForAllPieces()
-            => state.WhiteMoves.GetEnumerable().Concat(state.BlackMoves.GetEnumerable());
-
-        public IEnumerable<Move> GetAllMovesForWhite()
-            => state.WhiteMoves.GetEnumerable();
-
-        public IEnumerable<Move> GetAllMovesForBlack()
-            => state.BlackMoves.GetEnumerable();
-
-        public IEnumerable<Move> GetAttackMovesCurrentPlayer()
-            => state.CurrentMoves.GetEnumerable().Where(m=>m.capture != default);
-
-        public IEnumerable<Move> GetChecksFromWhite()
-            => state.WhiteMoves.GetEnumerable().Where(m => m.capture == blackKing);
-
-        public IEnumerable<Move> GetChecksFromBlack()
-            => state.BlackMoves.GetEnumerable().Where(m => m.capture == whiteKing);
-
-        public IEnumerable<Move> GetAllMovesCurrentPlayer()
-            => state.CurrentMoves.GetEnumerable();  
-
-        public IEnumerable<Move> GetChecksFromCurrentPlayer()
-            => state.CurrentMoves.GetEnumerable().Where(m => m.capture != null && m.capture.type == PieceType.King);
-        */
 
         public bool MoveEvadesCheck(Move move)
         {
@@ -357,127 +352,6 @@ namespace Retrodactyl.Chess.Core
 
         public IEnumerable<Move> GetAttackMoves() => state.CurrentMoves.GetEnumerable().Where(x => x.capture != null);
 
-        /*
-        public IEnumerable<Move> GetMoves()
-        {
-            return GetMoves(MoveType.All, Player.Current);
-        }
-        public IEnumerable<Move> GetMoves(MoveType ofType)
-        {
-            return GetMoves(ofType, Player.Current);
-        }
-
-        public IEnumerable<Move> GetMoves(MoveType ofType, Player getMovesFor)
-        {
-
-            if (state.PlayerInCheck)
-                return getMovesInCheck(ofType, getMovesFor);   
-            
-            else
-                return getMoves(ofType, getMovesFor);
-        }
-
-        private IEnumerable<Move> getMovesInCheck(MoveType ofType, Player getMovesFor)
-        {
-            foreach (var move in getMoves(ofType, getMovesFor))
-            {
-                _getMovesInCheck[moveCount] = move;
-                moveCount++;
-            }
-            return _getMovesInCheck.Take(moveCount).Where(MoveEvadesCheck);
-        }
-
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private IEnumerable<Move> getMoves(MoveType ofType, Player getMovesFor)
-        {
-            switch (ofType)
-            {
-                case MoveType.All:
-                    switch (getMovesFor)
-                    {
-                        case Player.Black: return black.SelectMany(x => x.GetMoves());
-                        case Player.White: return white.SelectMany(x => x.GetMoves());
-                        case Player.Both: return pieces.SelectMany(x => x.GetMoves());
-                        case Player.Current:
-                            return currentPlayer == Player.White
-                               ? white.SelectMany(x => x.GetMoves())
-                               : black.SelectMany(x => x.GetMoves());
-                    }
-                    break;
-                case MoveType.Capture:
-                    switch (getMovesFor)
-                    {
-                        case Player.Black: return black.SelectMany(x => x.GetMoves().Where(m => m.capture != null));
-                        case Player.White: return white.SelectMany(x => x.GetMoves().Where(m => m.capture != null));
-                        case Player.Both: return pieces.SelectMany(x => x.GetMoves().Where(m => m.capture != null));
-                        case Player.Current:
-                            return currentPlayer == Player.White
-                               ? white.SelectMany(x => x.GetMoves().Where(m => m.capture != null))
-                               : black.SelectMany(x => x.GetMoves().Where(m => m.capture != null));
-                    }
-                    break;
-                case MoveType.Normal:
-                    switch (getMovesFor)
-                    {
-                        case Player.Black: return black.SelectMany(x => x.GetMoves().Where(m => m.capture == null));
-                        case Player.White: return white.SelectMany(x => x.GetMoves().Where(m => m.capture == null));
-                        case Player.Both: return pieces.SelectMany(x => x.GetMoves().Where(m => m.capture == null));
-                        case Player.Current:
-                            return currentPlayer == Player.White
-                               ? white.SelectMany(x => x.GetMoves().Where(m => m.capture == null))
-                               : black.SelectMany(x => x.GetMoves().Where(m => m.capture == null));
-                    }
-                    break;
-                case MoveType.Checks:
-                    switch (getMovesFor)
-                    {
-                        case Player.Black: return black.SelectMany(x => x.GetMoves().Where(m => m.capture == whiteKing));
-                        case Player.White: return white.SelectMany(x => x.GetMoves().Where(m => m.capture == blackKing));
-                        case Player.Both: return pieces.SelectMany(x => x.GetMoves().Where(m => m.capture != null && m.capture.type == PieceType.King));
-                        case Player.Current:
-                            return currentPlayer == Player.White
-                               ? white.SelectMany(x => x.GetMoves().Where(m => m.capture == blackKing))
-                               : black.SelectMany(x => x.GetMoves().Where(m => m.capture == whiteKing));
-                    }
-                    break;
-            }
-            return null;
-        }
-
-
-        public IEnumerable<Move> GetMovesKingCaptures(Player getMovesFor)
-        {
-            switch (getMovesFor)
-            {
-                case Player.Black: return black.SelectMany(x => x.GetMoves()).Where(m => m.capture == whiteKing);
-                case Player.White: return white.SelectMany(x => x.GetMoves()).Where(m => m.capture == blackKing);
-                case Player.Both: return pieces.SelectMany(x => x.GetMoves()).Where(m => m.capture != null && m.capture.type == PieceType.King);
-                case Player.Current:
-                    return currentPlayer == Player.White
-                        ? white.SelectMany(x => x.GetMoves()).Where(m => m.capture == blackKing)
-                        : black.SelectMany(x => x.GetMoves()).Where(m => m.capture == whiteKing);
-            }
-            return null;
-        }
-
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveEvadesCheck(Move move)
-        {
-            var player = currentPlayer;
-            if (move.piece.player == player)
-            {
-                bool valid;
-                Move(move);
-                var inCheck = GetMovesKingCaptures(Player.Current).Any();
-                valid = !inCheck;
-                Undo();
-                return valid;
-            }
-            return true;
-        }
-        */
-
-
         private void domove(Move move)
         {
 
@@ -489,17 +363,9 @@ namespace Retrodactyl.Chess.Core
             var p = move.piece;
 #endif
 
-            //var p = move.piece;
-
             // handle capture first
             if (move.capture != null)
             {
-                // todo: figure out why board cloning
-                // is causing captured pieces escape
-                // scope
-                // this line shouldn't be needed!
-                //move.capture = this[move.capture.location];
-
 #if DEBUG
                 var c = this[move.capture.location];
                 Debug.Assert(c.Equals( move.capture));

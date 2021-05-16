@@ -281,7 +281,7 @@ namespace Retrodactyl.Chess.Core
 
         public override string ToString()
         {
-            return $"{(char)(x + 97)}{Math.Abs((y+1)*-1)}";
+            return $"{(char)(x + 97)}{(y*-1)+8}";
         }
     }
 

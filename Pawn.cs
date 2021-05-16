@@ -113,27 +113,30 @@ namespace Retrodactyl.Chess.Core
                 if (advance1_y > -1 && advance1_y < 8)
                 {
                     p = board[advance1_y, origin_x];
-                    if (p == null) moves.Add(new Move(this, location, new Square(origin_x, advance1_y)));
+                    if (p == null)
+                    {
+                        // one square advance
+                        moves.Add(new Move(this, location, new Square(origin_x, advance1_y)));
 
+                        // first move (2 square) advance
+                        if (moveCount == 0)
+                        {
+                            int advance2_y = origin_y + advance2;
+                            if (advance2_y > -1 && advance2_y < 8)
+                            {
+                                p = board[advance2_y, origin_x];
+                                if (p == null) moves.Add(new Move(this, location, new Square(origin_x, advance2_y)));
+                            }
+                        }
+                    }
                     // capture
                     p = board[advance1_y, left_x];
                     if (p != null && p.player != player) moves.Add(new Move(this, location, p.location, p));
                     p = board[advance1_y, right_x];
                     if (p != null && p.player != player) moves.Add(new Move(this, location, p.location, p));
-
-                    // first move (2 square) advance
-                    if (moveCount == 0)
-                    {
-                        int advance2_y = origin_y + advance2;
-                        if (advance2_y > -1 && advance2_y < 8)
-                        {
-                            p = board[advance2_y, origin_x];
-                            if (p == null) moves.Add(new Move(this, location, new Square(origin_x, advance2_y)));
-                        }
-                    }
-
+                   
                     //enpassant          
-                    else if (moveCount == 2 &&                        // ensure that the capturing pawn is on its fifth rank
+                    if (moveCount == 2 &&                        // ensure that the capturing pawn is on its fifth rank
                             origin_y == fifthRank)                      // and has previously performed a 2square advance
                     {
                         p = board[origin_y, left_x];
@@ -155,25 +158,28 @@ namespace Retrodactyl.Chess.Core
                 if (advance1_y > -1 && advance1_y < 8)
                 {
                     p = board[advance1_y, origin_x];
-                    if (p == null) moves.Add(new Move(this, location, new Square(origin_x, advance1_y)));
+                    if (p == null)
+                    {
+                        // one square advance
+                        moves.Add(new Move(this, location, new Square(origin_x, advance1_y)));
 
+                        // first move (2 square) advance
+                        if (moveCount == 0)
+                        {
+                            int advance2_y = origin_y + advance2;
+                            if (advance2_y > -1 && advance2_y < 8)
+                            {
+                                p = board[advance2_y, origin_x];
+                                if (p == null) moves.Add(new Move(this, location, new Square(origin_x, advance2_y)));
+                            }
+                        }
+                    }
                     // capture
                     p = board[advance1_y, right_x];
                     if (p != null && p.player != player) moves.Add(new Move(this, location, p.location, p));
 
-                    // first move (2 square) advance
-                    if (moveCount == 0)
-                    {
-                        int advance2_y = origin_y + advance2;
-                        if (advance2_y > -1 && advance2_y < 8)
-                        {
-                            p = board[advance2_y, origin_x];
-                            if (p == null) moves.Add(new Move(this, location, new Square(origin_x, advance2_y)));
-                        }
-                    }
-
                     //enpassant          
-                    else if (moveCount == 2 &&                        // ensure that the capturing pawn is on its fifth rank
+                    if (moveCount == 2 &&                        // ensure that the capturing pawn is on its fifth rank
                             origin_y == fifthRank)                      // and has previously performed a 2square advance
                     {
                         
@@ -192,25 +198,28 @@ namespace Retrodactyl.Chess.Core
                 if (advance1_y > -1 && advance1_y < 8)
                 {
                     p = board[advance1_y, origin_x];
-                    if (p == null) moves.Add(new Move(this, location, new Square(origin_x, advance1_y)));
+                    if (p == null)
+                    {
+                        // one square advance
+                        moves.Add(new Move(this, location, new Square(origin_x, advance1_y)));
 
+                        // first move (2 square) advance
+                        if (moveCount == 0)
+                        {
+                            int advance2_y = origin_y + advance2;
+                            if (advance2_y > -1 && advance2_y < 8)
+                            {
+                                p = board[advance2_y, origin_x];
+                                if (p == null) moves.Add(new Move(this, location, new Square(origin_x, advance2_y)));
+                            }
+                        }
+                    }
                     // capture
                     p = board[advance1_y, left_x];
                     if (p != null && p.player != player) moves.Add(new Move(this, location, p.location, p));
 
-                    // first move (2 square) advance
-                    if (moveCount == 0)
-                    {
-                        int advance2_y = origin_y + advance2;
-                        if (advance2_y > -1 && advance2_y < 8)
-                        {
-                            p = board[advance2_y, origin_x];
-                            if (p == null) moves.Add(new Move(this, location, new Square(origin_x, advance2_y)));
-                        }
-                    }
-
                     //enpassant          
-                    else if (moveCount == 2 &&                        // ensure that the capturing pawn is on its fifth rank
+                    if (moveCount == 2 &&                        // ensure that the capturing pawn is on its fifth rank
                             origin_y == fifthRank)                      // and has previously performed a 2square advance
                     {
                         p = board[origin_y, left_x];
@@ -223,69 +232,5 @@ namespace Retrodactyl.Chess.Core
             }
             
         }
-
-        /*
-        public override void GetMoves(FastList<Move> moves)
-        {
-            IPiece p;
-            int origin_x = location.x;
-            int origin_y = location.y;
-            int advance1_y = origin_y + advance1;
-            int left_x = origin_x - 1;
-            int right_x = origin_x + 1;
-
-            //advance
-            if (advance1_y > -1 && advance1_y < 8)
-            {
-                p = board[advance1_y, origin_x];
-                if (p == null) moves.Add(new Move(this, location, new Square(origin_x, advance1_y)));
-
-                // capture
-                if (left_x > -1)
-                {
-                    p = board[advance1_y, left_x];
-                    if (p != null && p.player != player) moves.Add(new Move(this, location, p.location, p));
-                }
-                if (right_x < 8)
-                {
-                    p = board[advance1_y, right_x];
-                    if (p != null && p.player != player) moves.Add(new Move(this, location, p.location, p));
-                }
-            }
-
-            // first move (2 square) advance
-            if (moveCount == 0)
-            {
-                int advance2_y = origin_y + advance2;
-                if (advance2_y > -1 && advance2_y < 8)
-                {
-                    p = board[advance2_y, origin_x];
-                    if (p == null) moves.Add(new Move(this, location, new Square(origin_x, advance2_y)));
-                }
-            }
-
-            //enpassant          
-            else if (moveCount == 2 &&                        // ensure that the capturing pawn is on its fifth rank
-                    origin_y==fifthRank)                      // and has previously performed a 2square advance
-            {
-                if (left_x > -1)
-                {
-                    p = board[origin_y, left_x];
-                    if (p != null && p.player != player && p.type == PieceType.Pawn && board[advance1_y, left_x] == null)
-                    {
-                        moves.Add(new Move(this, location, new Square(left_x, advance1_y), p));
-                    }
-                }
-                if (right_x < 8)
-                {
-                    p = board[origin_y, right_x];
-                    if (p != null && p.player != player && p.type == PieceType.Pawn && board[advance1_y, right_x] == null)
-                    {
-                        moves.Add(new Move(this, location, new Square(right_x, advance1_y), p));
-                    }
-                }
-            }
-        }
-        */
     }
 }
