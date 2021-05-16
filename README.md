@@ -35,3 +35,6 @@ Console.WriteLine(board.ToColorANSI());
 // undo the last move
 board.Undo();
 ```
+
+#### Need more help?
+Check out the [Unit Tests](https://github.com/digital-synapse/Retrodactyl.Chess.Core.UnitTests) or the [Performance Tests](https://github.com/digital-synapse/Retrodactyl.Chess.Core.PerfTests)
