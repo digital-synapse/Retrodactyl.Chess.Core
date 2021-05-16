@@ -208,49 +208,66 @@ namespace Retrodactyl.Chess.Core
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override IEnumerable<Move> GetMoves()
         {
-            var pos = new Square(location.x, location.y + 1);
+            
             IPiece p;
+
+            //s
+            var pos = new Square(location.x, location.y + 1);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) yield return new Move(this, location, pos, p);
             }
+
+            //e
             pos = new Square(location.x + 1, location.y);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) yield return new Move(this, location, pos, p);
             }
+
+            //se
             pos = new Square(location.x+1, location.y + 1);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) yield return new Move(this, location, pos, p);
             }
-            pos = new Square(location.x, location.y + 1);
+
+            //ne
+            pos = new Square(location.x+1, location.y - 1);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) yield return new Move(this, location, pos, p);
             }
+
+            //sw
             pos = new Square(location.x-1, location.y + 1);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) yield return new Move(this, location, pos, p);
             }
+
+            //w
             pos = new Square(location.x - 1, location.y);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) yield return new Move(this, location, pos, p);
             }
+
+            // nw
             pos = new Square(location.x - 1, location.y-1);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) yield return new Move(this, location, pos, p);
             }
+
+            // n
             pos = new Square(location.x, location.y-1);
             if (pos.isValid)
             {
@@ -287,56 +304,74 @@ namespace Retrodactyl.Chess.Core
         }
 
         public override void GetMoves(FastList<Move> moves)
-        {
-            var pos = new Square(location.x, location.y + 1);
+        {            
             IPiece p;
+
+            //n
+            var pos = new Square(location.x, location.y - 1);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) moves.Add(new Move(this, location, pos, p));
             }
-            pos = new Square(location.x + 1, location.y);
-            if (pos.isValid)
-            {
-                p = board[pos];
-                if (p == null || p.player != player) moves.Add(new Move(this, location, pos, p));
-            }
-            pos = new Square(location.x + 1, location.y + 1);
-            if (pos.isValid)
-            {
-                p = board[pos];
-                if (p == null || p.player != player) moves.Add(new Move(this, location, pos, p));
-            }
+
+            //s
             pos = new Square(location.x, location.y + 1);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) moves.Add(new Move(this, location, pos, p));
             }
-            pos = new Square(location.x - 1, location.y + 1);
+
+            //e
+            pos = new Square(location.x + 1, location.y);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) moves.Add(new Move(this, location, pos, p));
             }
+
+            //w
             pos = new Square(location.x - 1, location.y);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) moves.Add(new Move(this, location, pos, p));
             }
+
+            //se
+            pos = new Square(location.x + 1, location.y + 1);
+            if (pos.isValid)
+            {
+                p = board[pos];
+                if (p == null || p.player != player) moves.Add(new Move(this, location, pos, p));
+            }
+
+            //ne
+            pos = new Square(location.x+1, location.y - 1);
+            if (pos.isValid)
+            {
+                p = board[pos];
+                if (p == null || p.player != player) moves.Add(new Move(this, location, pos, p));
+            }
+
+            // sw
+            pos = new Square(location.x - 1, location.y + 1);
+            if (pos.isValid)
+            {
+                p = board[pos];
+                if (p == null || p.player != player) moves.Add(new Move(this, location, pos, p));
+            }
+
+            //nw
             pos = new Square(location.x - 1, location.y - 1);
             if (pos.isValid)
             {
                 p = board[pos];
                 if (p == null || p.player != player) moves.Add(new Move(this, location, pos, p));
             }
-            pos = new Square(location.x, location.y - 1);
-            if (pos.isValid)
-            {
-                p = board[pos];
-                if (p == null || p.player != player) moves.Add(new Move(this, location, pos, p));
-            }
+
+            
 
             // castle moves
             if (moveCount == 0)
