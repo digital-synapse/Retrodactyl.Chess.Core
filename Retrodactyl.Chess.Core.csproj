@@ -8,9 +8,11 @@
     <PackageTags>Retrodactyl</PackageTags>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <Authors>digital-synapse</Authors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(DesignTimeBuild)' != 'true'">
     <PackageVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd.HHmmss"))</PackageVersion>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\Retrodactyl.Extensions.DotNet\Retrodactyl.Extensions.DotNet.csproj" />
   </ItemGroup>
