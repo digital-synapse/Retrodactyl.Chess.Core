@@ -14,8 +14,8 @@ namespace Retrodactyl.Chess.Core
         {
             try
             {
-                //var result = minimax_8(5, game, game.CurrentPlayer);
-                var result = minimax_8_iterative_deepening(8, game, game.CurrentPlayer);
+                var result = minimax_8(5, game, game.CurrentPlayer);
+                //var result = minimax_8_iterative_deepening(8, game, game.CurrentPlayer);
 
                 return result;
             }
