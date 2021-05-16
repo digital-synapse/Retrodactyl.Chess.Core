@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,6 +7,8 @@
     <RepositoryUrl>https://github.com/digital-synapse/Retrodactyl.Chess.Core</RepositoryUrl>
     <PackageTags>Retrodactyl</PackageTags>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <Authors>digital-synapse</Authors>
+    <PackageVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd.HHmmss"))</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
