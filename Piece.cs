@@ -228,8 +228,7 @@ namespace Retrodactyl.Chess.Core
         }
         public int x;
         public int y;
-        public int file => x;
-        public int rank => y;
+
         public bool isValid => x >= 0 && y >= 0 && x < 8 && y < 8;
 
 
@@ -279,9 +278,11 @@ namespace Retrodactyl.Chess.Core
             return s1.x != s2.x || s1.y != s2.y;
         }
 
+        public char file => (char)(x + 97);
+        public char rank => (char)((y * -1) + 56);
         public override string ToString()
         {
-            return $"{(char)(x + 97)}{(y*-1)+8}";
+            return $"{file}{rank}";
         }
     }
 

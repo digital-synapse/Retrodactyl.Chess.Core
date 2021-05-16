@@ -261,7 +261,7 @@ namespace Retrodactyl.Chess.Core
 
                     if (t == PieceType.Pawn)
                     {
-                        var file = s.file;
+                        var file = s.x;
                         if (file == 0 || file == 7) value -= 15; // rook pawns worth 15% less because they can only attack one way
                         value += pawnPositionTable[index];       // add position bonus / penalties (favor pawn advance)                        
                                                                  //pawnFileCount[player,file]++;                // penalty for doubled pawn
@@ -293,7 +293,7 @@ namespace Retrodactyl.Chess.Core
 
                     else if (t == PieceType.Queen)
                     {
-                        var rank = s.rank;
+                        var rank = s.y;
                         if (rank > 0 && rank < 7)
                             value -= 50; // big penalty for eager queens
                     }
